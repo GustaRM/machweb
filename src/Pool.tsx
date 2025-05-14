@@ -1,10 +1,10 @@
-export default function Pool (props){
+export default function Pool ({value,name}){
      return <div className='pool'>
       <div>
-        value: {props.value}
+        value: {value}
       </div>
       <div>
-        name: {props.name}
+        name: {name}
       </div>
     </div>
 }

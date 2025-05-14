@@ -5,7 +5,6 @@ import Pool from './Pool'
 function App() {
   const [pool, setPool] = useState({ value: 0, name: "coins" })
 
-
   return (
     <>
     
