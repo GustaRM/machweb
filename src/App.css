@@ -40,3 +40,8 @@
 .read-the-docs {
   color: #888;
 }
+
+.pool {
+  border: 1px solid white;
+  padding: 1em;
+}

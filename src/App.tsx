@@ -2,13 +2,19 @@ import { useState } from 'react'
 import './App.css'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [pool, setPool] = useState({ value: 0, name: "coins" })
+
 
   return (
-      
-        <button onClick={() => setCount((count) => count + 1)}>
-          contador é {count}
-        </button>
+    <div className='pool'>
+      <div>
+        value: {pool.value}
+      </div>
+      <div>
+        name: {pool.name}
+      </div>
+    </div>
+
 
   )
 }
