@@ -1,4 +1,8 @@
-export default function Pool ({value,name}){
+type PoolProps = {
+  value: number;
+  name: string;
+}
+export default function Pool ({value,name}: PoolProps){
      return <div className='pool'>
       <div>
         value: {value}
