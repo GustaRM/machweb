@@ -1,7 +1,7 @@
 type ConnectionProps = {
   name: string;
-  from: number;
-  to: number;
+  from: string;
+  to: string;
   value: number;
 }
 export default function Connection ({name, from, to, value}: ConnectionProps){
