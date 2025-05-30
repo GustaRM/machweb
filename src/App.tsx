@@ -14,7 +14,9 @@ function App() {
     { value: 4, name: "Pool D" }])
 
   const [connections, setConnections] = useState([
-    {name: "gasta", from: 0, to: 1, value: 1}
+    { name: "gasta", from: 0, to: 1, value: 1 },
+    { name: "beber", from: 1, to: 5, value: 2 }
+
   ])
 
   return (
@@ -26,12 +28,18 @@ function App() {
       {pools.map((pool) => { return <Pool key={pool.name} name={pool.name} value={pool.value} /> })}
 
       <button onClick={() => {
-        const novoPools = [...pools];
-        novoPools[0].value++;
-        novoPools[1].value--;
-        setPools(novoPools);
+        for (let i = 0; i < connections.length; i++) {
+          const connection = connections[i];
+          const source = pools[connection.from];
+          const target = pools[connection.to];
+          
+          const novoPools = [...pools];
+          source.value-= connection.value;
+          target.value+= connection.value;
+          setPools(novoPools);
+        }
       }}>
-        Aumenta
+        Tick
       </button>
 
     </>
