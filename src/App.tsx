@@ -3,17 +3,17 @@ import './App.css'
 import Pool from './Pool'
 
 function App() {
-  const [pools, setPools] = useState([{ value: 10, name: "coins" }, { value: 5, name: "potions" }])
+  const [pools, setPools] = useState([
+    { value: 10, name: "coins" },
+    { value: 5, name: "potions" },
+    { value: 1, name: "Pool A" },
+    { value: 2, name: "Pool B" },
+    { value: 3, name: "Pool C" },
+    { value: 4, name: "Pool D" }])
 
   return (
     <>
       {pools.map((pool) => { return <Pool key={pool.name} name={pool.name} value={pool.value} /> })}
-
-      <Pool name="Pool A" value={1} />
-
-      <Pool name="Pool B" value={2} />
-      <Pool name="Pool C" value={3} />
-      <Pool name="Pool D" value={4} />
       <button onClick={() => {
         const novoPools = [...pools];
         novoPools[0].value++;
