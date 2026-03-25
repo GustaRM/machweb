@@ -1,7 +1,6 @@
 import { expect, it } from "vitest";
 import { Source } from "./Source";
 import { Stock } from "./Stock";
-import { Token } from "./Token";
 
 it("cria uma source com id, stock e type", () => {
     const stock = new Stock("s1");
