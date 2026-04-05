@@ -6,3 +6,8 @@ export { Source } from './Source';
 export { Escoadouro } from './Escoadouro';
 export { Conversor } from './Conversor';
 export { Comerciante } from './Comerciante';
+export { Stock } from './Stock';
+export { Token } from './Token';
+export { Converter, Recipe } from './Converter';
+export { Sink } from './Sink';
+export { Trader, Trade } from './Trader';
