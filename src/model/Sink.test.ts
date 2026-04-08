@@ -18,6 +18,14 @@ it("remove um token do type ao estoque quando chama tick", () => {
     expect(stock.tokens.get("moeda")!.amount).toBe(4);
 });
 
+it("não remove token se estiver com 0", () => {
+    const stock = new Stock("s1");
+    stock.add({type: "moeda", amount: 0});
+    const sink = new Sink("sink1", stock, "moeda");
+    sink.tick();
+    expect(stock.tokens.get("moeda")!.amount).toBe(0);
+});
+
 it("remove múltiplos tokens ao chamar tick várias vezes", () => {
     const stock = new Stock("s1");
     stock.add({type: "moeda", amount: 10});

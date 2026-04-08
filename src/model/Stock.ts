@@ -14,7 +14,7 @@ export class Stock {
         if (current) {
             current.amount += token.amount;
         }else {
-            this.tokens.set(token.type, token);
+            this.tokens.set(token.type, {...token});
         }
     }
 

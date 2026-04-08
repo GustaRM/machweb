@@ -53,7 +53,7 @@ it("realiza múltiplas conversões ao chamar tick várias vezes", () => {
     // Cada tick realiza uma conversão: 1 Farinha + 1 Água -> 1 Pão
     expect(stock1.tokens.get("Farinha")?.amount).toBe(2);
     expect(stock1.tokens.get("Água")?.amount).toBe(2);
-    expect(stock2.tokens.get("Pão")?.amount).toBe(4);
+    expect(stock2.tokens.get("Pão")?.amount).toBe(3);
 });
 
 it("converte com múltiplos outputs", () => {

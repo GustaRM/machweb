@@ -2,54 +2,45 @@ import { Stock } from "./Stock";
 import { Token } from "./Token";
 
 export class Trade {
-    input: Token[];
-    output: Token[];
+    termsA: Token[];
+    termsB: Token[];
 
-    constructor(input: Token[], output: Token[]) {
-        this.input = input;
-        this.output = output;
+    constructor(termsA: Token[], termsB: Token[]) {
+        this.termsA = termsA;
+        this.termsB = termsB;
     }
 
-    hasInput(stock: Stock) {
-        return this.input.every(t => stock.has(t));
+    hasTermsA(stock: Stock) {
+        return this.termsA.every(t => stock.has(t));
+    }
+
+    hasTermsB(stock: Stock) {
+        return this.termsB.every(t => stock.has(t));
     }
 }
 
 export class Trader {
     id: string;
-    stock1: Stock;
-    stock2: Stock;
+    partyA: Stock;
+    partyB: Stock;
     trade: Trade;
-    commission: number;
 
-    constructor(id: string, stock1: Stock, stock2: Stock, trade: Trade, commission: number = 0) {
+    constructor(id: string, partyA: Stock, partyB: Stock, trade: Trade) {
         this.id = id;
-        this.stock1 = stock1;
-        this.stock2 = stock2;
+        this.partyA = partyA;
+        this.partyB = partyB;
         this.trade = trade;
-        this.commission = Math.max(0, Math.min(1, commission)); // Clamp between 0 and 1
     }
 
     tick() {
-        if (this.trade.hasInput(this.stock1)) {
-            // Remove input from stock1
-            this.trade.input.forEach(t => this.stock1.remove(t));
+        if (this.trade.hasTermsA(this.partyA) && this.trade.hasTermsB(this.partyB)) {
+            this.trade.termsA.forEach(t => this.partyA.remove(t));
+            this.trade.termsB.forEach(t => this.partyB.remove(t));
 
-            // Add output to stock2
-            this.trade.output.forEach(t => {
-                const commissionAmount = Math.floor(t.amount * this.commission);
-                const outputAmount = t.amount - commissionAmount;
-                if (outputAmount > 0) {
-                    this.stock2.add(new Token(t.type, outputAmount));
-                }
-            });
+            this.trade.termsA.forEach(t => this.partyB.add(t));
+            this.trade.termsB.forEach(t => this.partyA.add(t));
         }
     }
 
-    getCommissionEarned() {
-        const commissionPerTrade = this.trade.output.reduce((sum, t) => {
-            return sum + Math.floor(t.amount * this.commission);
-        }, 0);
-        return commissionPerTrade;
-    }
+   
 }
