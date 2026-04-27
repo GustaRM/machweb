@@ -11,3 +11,5 @@ export { Token } from './Token';
 export { Converter, Recipe } from './Converter';
 export { Sink } from './Sink';
 export { Trader, Trade } from './Trader';
+export { Simulator } from './Simulator';
+export { Gate } from './Gate';

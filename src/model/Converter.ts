@@ -1,3 +1,4 @@
+
 import type { Stock } from "./Stock";
 import type { Token } from "./Token";
 
@@ -20,6 +21,7 @@ export class Converter{
     inputStock: Stock;
     outputStock: Stock;
     recipe: Recipe;
+    wasSuccessful: boolean = false;
 
     constructor (id: string, inputStock: Stock, outputStock: Stock, recipe: Recipe){
         this.id = id;
@@ -32,6 +34,9 @@ export class Converter{
         if(this.recipe.hasInput(this.inputStock)){
             this.recipe.input.forEach(t => this.inputStock.remove(t));
             this.recipe.output.forEach(t => this.outputStock.add(t));
+            this.wasSuccessful = true;
+        } else {
+            this.wasSuccessful = false;
         }
     }
 }
