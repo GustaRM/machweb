@@ -2,11 +2,13 @@ import { Source } from "./Source";
 import { Converter } from "./Converter";
 import { Trader } from "./Trader";
 import { Stock } from "./Stock";
+import { Gate } from "./Gate";
 
 export class Simulator {
   private converters: Converter[] = [];
   private sources: Source[] = [];
   private traders: Trader[] = [];
+  private gates: Gate[] = [];
   private stocks: Stock[] = [];
   private tickCount: number = 0;
 
@@ -23,6 +25,10 @@ export class Simulator {
     this.traders.push(trader);
   }
 
+  addGate(gate: Gate) {
+    this.gates.push(gate);
+  }
+
   addStock(stock: Stock) {
     this.stocks.push(stock);
   }
@@ -34,18 +40,15 @@ export class Simulator {
 
   // Executar um tick da simulação
   tick() {
-    // Ordem de execução (de trás para frente):
-    // 1. Converters primeiro (consomem recursos)
-    // 2. Traders depois (trocam recursos)
-    // 3. Sources por último (geram recursos)
+    // Ordem de execução:
+    // 1. Converters (consomem recursos)
+    // 2. Gates (transferem recursos)
+    // 3. Traders (trocam recursos)
+    // 4. Sources (geram recursos)
     
-    // Converter executa primeiro
     this.converters.forEach(converter => converter.tick());
-
-    // Traders executam segundo
+    this.gates.forEach(gate => gate.tick());
     this.traders.forEach(trader => trader.tick());
-
-    // Sources executam por último
     this.sources.forEach(source => source.tick());
 
     this.tickCount++;
