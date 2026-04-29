@@ -27,8 +27,12 @@ function App() {
     )
     const lenhador = new Converter("lenhador", madeiraStock, tauaStock, lenhadorRecipe)
 
-    // Criar portão que transfere tábuas para ouro (conversão simples)
-    const portaTauas = new Gate("porta-tauas", tauaStock, ouroStock, "tabua", 1)
+    // Criar receita: 2 tábuas → 3 ouro
+    const mercadorRecipe = new Recipe(
+      [new Token("tabua", 2)],
+      [new Token("ouro", 3)]
+    )
+    const mercador = new Converter("mercador", tauaStock, ouroStock, mercadorRecipe)
 
     // Criar simulador e registrar elementos
     const sim = new Simulator()
@@ -37,7 +41,7 @@ function App() {
     sim.addStock(ouroStock)
     sim.addSource(florestaSource)
     sim.addConverter(lenhador)
-    sim.addGate(portaTauas)
+    sim.addConverter(mercador)
 
     return sim
   })
@@ -48,7 +52,7 @@ function App() {
     
     const madeiraAmount = stocks[0]?.tokens.find(t => t.type === "madeira")?.amount || 0
     const tauaAmount = stocks[1]?.tokens.find(t => t.type === "tabua")?.amount || 0
-    const ouroAmount = stocks[2]?.tokens.find(t => t.type === "tabua")?.amount || 0
+    const ouroAmount = stocks[2]?.tokens.find(t => t.type === "ouro")?.amount || 0
 
     setSimulatorState({
       madeira: madeiraAmount,
@@ -74,29 +78,76 @@ function App() {
 
   return (
     <div className="app-container">
-      <h1>🎮 Simulador de Economia do Jogo (Machweb)</h1>
-      
-      <div className="stats">
-        <h2>Tick: <span className="tick-counter">{simulatorState.tick}</span></h2>
+      <div className="header">
+        <h1>🎮 Simulador de Economia (Machinations)</h1>
+        <div className="tick-display">
+          <span className="tick-label">Tick:</span>
+          <span className="tick-counter">{simulatorState.tick}</span>
+        </div>
       </div>
 
-      <div className="stocks-container">
-        <div className="stock">
-          <h3>🌲 Madeira</h3>
-          <div className="stock-value">{simulatorState.madeira}</div>
-          <p className="description">Gerada pela Floresta (Source)</p>
+      <div className="flow-diagram">
+        {/* Source - Geração */}
+        <div className="element source">
+          <div className="element-header">🌲 Source</div>
+          <div className="element-name">Floresta</div>
+          <div className="element-output">
+            <span className="resource">🌲 +5</span>
+          </div>
         </div>
 
-        <div className="stock">
-          <h3>🪵 Tábuas</h3>
-          <div className="stock-value">{simulatorState.tabua}</div>
-          <p className="description">Produzidas pelo Lenhador (Converter)</p>
+        {/* Arrow 1 */}
+        <div className="arrow">→</div>
+
+        {/* Stock 1 - Madeira */}
+        <div className="stock-display">
+          <div className="resource-name">🌲 Madeira</div>
+          <div className="resource-value">{simulatorState.madeira}</div>
         </div>
 
-        <div className="stock">
-          <h3>✨ Ouro</h3>
-          <div className="stock-value">{simulatorState.ouro}</div>
-          <p className="description">Transferido via Portão (Gate)</p>
+        {/* Arrow 2 */}
+        <div className="arrow">→</div>
+
+        {/* Converter - Transformação */}
+        <div className="element converter">
+          <div className="element-header">⚙️ Converter</div>
+          <div className="element-name">Lenhador</div>
+          <div className="element-recipe">
+            <span className="input">3 🌲</span>
+            <span className="recipe-arrow">→</span>
+            <span className="output">2 🪵</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="flow-diagram flow-diagram-2">
+        {/* Tabuas Stock */}
+        <div className="stock-display">
+          <div className="resource-name">🪵 Tábuas</div>
+          <div className="resource-value">{simulatorState.tabua}</div>
+        </div>
+
+        {/* Arrow 3 */}
+        <div className="arrow">→</div>
+
+        {/* Converter 2 - Mercador */}
+        <div className="element converter">
+          <div className="element-header">⚙️ Converter</div>
+          <div className="element-name">Mercador</div>
+          <div className="element-recipe">
+            <span className="input">2 🪵</span>
+            <span className="recipe-arrow">→</span>
+            <span className="output">3 ✨</span>
+          </div>
+        </div>
+
+        {/* Arrow 4 */}
+        <div className="arrow">→</div>
+
+        {/* Ouro Stock */}
+        <div className="stock-display">
+          <div className="resource-name">✨ Ouro</div>
+          <div className="resource-value">{simulatorState.ouro}</div>
         </div>
       </div>
 
@@ -112,14 +163,20 @@ function App() {
         </button>
       </div>
 
-      <div className="info">
-        <h3>📋 Como funciona:</h3>
-        <ul>
-          <li><strong>Source (Floresta):</strong> Gera 5 madeira por tick</li>
-          <li><strong>Converter (Lenhador):</strong> Converte 3 madeira → 2 tábuas</li>
-          <li><strong>Gate (Portão):</strong> Transfere 1 tábua por tick para ouro</li>
-        </ul>
-        <p className="order">Ordem de execução: Converter → Gate → Source</p>
+      <div className="legend">
+        <h3>📊 Fluxo de Economia:</h3>
+        <div className="legend-items">
+          <div className="legend-item">
+            <span className="step-label">🌳 Source (Floresta):</span> Gera 5 madeira/tick
+          </div>
+          <div className="legend-item">
+            <span className="step-label">⚙️ Converter (Lenhador):</span> 3 madeira → 2 tábuas
+          </div>
+          <div className="legend-item">
+            <span className="step-label">⚙️ Converter (Mercador):</span> 2 tábuas → 3 ouro
+          </div>
+        </div>
+        <p className="execution-note">💡 Os recursos diminuem conforme são processados em cada etapa</p>
       </div>
     </div>
   )
