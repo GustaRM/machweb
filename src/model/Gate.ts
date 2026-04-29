@@ -24,7 +24,7 @@ export class Gate {
     this.isOpen = true; // Por padrão, abre
   }
 
-  // Abrir o gate (permite transferência)
+  /* Abrir o gate (permite transferência)
   open() {
     this.isOpen = true;
   }
@@ -38,13 +38,15 @@ export class Gate {
   toggle() {
     this.isOpen = !this.isOpen;
   }
+  */
 
   // Executar transferência (chamado a cada tick)
   tick() {
-    // Só transfere se estiver aberto
+    /* Só transfere se estiver aberto
     if (!this.isOpen) {
       return;
     }
+    */
 
     // Criar token com a quantidade a transferir
     const tokenToTransfer = new Token(this.resourceType, this.transferAmount);
