@@ -3,7 +3,6 @@ import './App.css'
 import Pool from './Pool'
 import Connection from './Connection'
 
-
 function App() {
   const [pools, setPools] = useState(
     new Map(

@@ -30,21 +30,6 @@ export class Gate {
     this.transferAmount = transferAmount;
   }
 
-  /* Abrir o gate (permite transferência)
-  open() {
-    this.isOpen = true;
-  }
-
-  // Fechar o gate (bloqueia transferência)
-  close() {
-    this.isOpen = false;
-  }
-
-  // Alternar estado (aberto ↔ fechado)
-  toggle() {
-    this.isOpen = !this.isOpen;
-  }
-  */
 
   tickRoundRobin(){
     // Tenta transferir do próximo stock de origem para o próximo stock de destino
@@ -62,13 +47,76 @@ export class Gate {
     
   }
 
+  tickChance(){
+    // Implementar lógica de transferência baseada em chance
+    const targetIndex = this.selectTargetByChance();
+    const source = this.sources[0]; // Para simplicidade, sempre tenta transferir do primeiro stock de origem
+    const target = this.targets[targetIndex];
+    const tokenToTransfer = new Token(this.resourceType, this.transferAmount);
+      
+    if (source.has(tokenToTransfer)) {
+      source.remove(tokenToTransfer);
+      target.add(tokenToTransfer);
+    }
+  }
+
+  selectTargetByChance(): number {
+    const rand = Math.random();
+    let cumulativeChance = 0; 
+    for (let i = 0; i < this.chanceDistribution.length; i++) {
+      cumulativeChance += this.chanceDistribution[i];
+      if (rand < cumulativeChance) {
+        return i;
+      } 
+    }
+    return this.chanceDistribution.length - 1; // Retorna o último índice como fallback
+  }
+
+  tickEqualSplit(){
+    // Implementar lógica de divisão igualitária dos recursos entre os targets
+    const source = this.sources[0]; // Para simplicidade, sempre tenta transferir do primeiro stock de origem
+    const totalTargets = this.targets.length;
+    const tokenToTransfer = new Token(this.resourceType, Math.floor(this.transferAmount / totalTargets));
+
+    if (source.has(tokenToTransfer)) {  
+      source.remove(tokenToTransfer);
+      this.targets.forEach(target => target.add(tokenToTransfer));
+    } 
+  }
+
+  tickPriority(){
+    // Implementar lógica de transferência baseada em prioridade
+    const source = this.sources[0]; // Para simplicidade, sempre tenta transferir do primeiro stock de origem
+    for (let i = 0; i < this.priorityList.length; i++) {
+      const targetIndex = this.priorityList[i];
+      const target = this.targets[targetIndex];
+      const tokenToTransfer = new Token(this.resourceType, this.transferAmount);
+      if (source.has(tokenToTransfer)) {
+        source.remove(tokenToTransfer);
+        target.add(tokenToTransfer);
+        break; // Para após transferir para o primeiro target disponível na lista de prioridade
+      }
+    }
+  }
+
+
   // Executar transferência (chamado a cada tick)
   tick() {
     switch(this.mode) {
       case "roundRobin":
         this.tickRoundRobin();
         break;
-      // Implementar outros modos (chance, equalSplit, priority) conforme necessário
+      case "chance":
+        this.tickChance();
+        break;
+      case "equalSplit":
+        this.tickEqualSplit();
+        break;
+      case "priority":
+        this.tickPriority();
+        break;
+      default:
+        this.tickRoundRobin(); // Padrão para Round Robin
     }
   }
 }

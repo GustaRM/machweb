@@ -4,11 +4,11 @@ import { Trader } from "./Trader";
 import { Stock } from "./Stock";
 
 export class Simulator {
-  private converters: Converter[] = [];
-  private sources: Source[] = [];
-  private traders: Trader[] = [];
-  private stocks: Stock[] = [];
-  private tickCount: number = 0;
+  converters: Converter[] = [];
+  sources: Source[] = [];
+  traders: Trader[] = [];
+  stocks: Stock[] = [];
+  tickCount: number = 0;
 
   // Adicionar elementos à simulação
   addConverter(converter: Converter) {
@@ -25,11 +25,6 @@ export class Simulator {
 
   addStock(stock: Stock) {
     this.stocks.push(stock);
-  }
-
-  // Obter o número de ticks executados
-  getTickCount(): number {
-    return this.tickCount;
   }
 
   // Executar um tick da simulação
@@ -56,17 +51,6 @@ export class Simulator {
     for (let i = 0; i < count; i++) {
       this.tick();
     }
-  }
-
-  // Obter estado atual dos stocks (para exibir no React)
-  getStocksState() {
-    return this.stocks.map(stock => ({
-      id: stock.id,
-      tokens: Array.from(stock.tokens.entries()).map(([type, token]) => ({
-        type,
-        amount: token.amount,
-      })),
-    }));
   }
 
   // Resetar a simulação
