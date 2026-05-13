@@ -1,8 +1,8 @@
 import { expect, it } from "vitest";
-import { Source } from "./Source";
-import { Stock } from "./Stock";
-import { Converter, Recipe } from "./Converter";
-import { Token } from "./Token";
+import { Source } from "../model/Source";
+import { Stock } from "../model/Stock";
+import { Converter, Recipe } from "../model/Converter";
+import { Token } from "../model/Token";
 
 it("cria um converter com id, stocks e recipe", () => {
     const stock1 = new Stock("s1");

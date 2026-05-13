@@ -1,7 +1,7 @@
 import { expect, it } from "vitest";
-import { Trader, Trade } from "./Trader";
-import { Stock } from "./Stock";
-import { Token } from "./Token";
+import { Trader, Trade } from "../model/Trader";
+import { Stock } from "../model/Stock";
+import { Token } from "../model/Token";
 
 it("cria um trader com id, stocks e trade", () => {
     const stock1 = new Stock("s1");

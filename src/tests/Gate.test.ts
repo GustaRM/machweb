@@ -1,7 +1,7 @@
 import { expect, it } from "vitest";
-import { Gate } from "./Gate";
-import { Stock } from "./Stock";
-import { Token } from "./Token";
+import { Gate } from "../model/Gate";
+import { Stock } from "../model/Stock";
+import { Token } from "../model/Token";
 
 // Teste básico para o Gate
 it("deve transferir recursos do estoque de origem para o estoque de destino", () => {

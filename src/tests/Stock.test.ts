@@ -1,6 +1,6 @@
 import { expect, it } from "vitest";
-import { Stock } from "./Stock";
-import { Token } from "./Token";
+import { Stock } from "../model/Stock";
+import { Token } from "../model/Token";
 
 it("vai adicionar a quantidade de um token em seu estoque", ()=>{
     const s1 = new Stock("s1");

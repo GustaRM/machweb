@@ -1,6 +1,6 @@
 import { expect, it } from "vitest";
-import { Sink } from "./Sink";
-import { Stock } from "./Stock";
+import { Sink } from "../model/Sink";
+import { Stock } from "../model/Stock";
 
 it("cria uma sink com id, stock e type", () => {
     const stock = new Stock("s1");

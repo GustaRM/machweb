@@ -1,6 +1,6 @@
 import { expect, it } from "vitest";
-import { Source } from "./Source";
-import { Stock } from "./Stock";
+import { Source } from "../model/Source";
+import { Stock } from "../model/Stock";
 
 it("cria uma source com id, stock e type", () => {
     const stock = new Stock("s1");

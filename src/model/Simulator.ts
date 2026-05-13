@@ -2,12 +2,14 @@ import { Source } from "./Source";
 import { Converter } from "./Converter";
 import { Trader } from "./Trader";
 import { Stock } from "./Stock";
+import type { Sink } from "./Sink";
 
 export class Simulator {
   converters: Converter[] = [];
   sources: Source[] = [];
   traders: Trader[] = [];
   stocks: Stock[] = [];
+  sinks: Sink[] = [];
   tickCount: number = 0;
 
   // Adicionar elementos à simulação
@@ -25,6 +27,10 @@ export class Simulator {
 
   addStock(stock: Stock) {
     this.stocks.push(stock);
+  }
+
+  addSink(sink: Sink) {
+    this.sinks.push(sink);
   }
 
   // Executar um tick da simulação
