@@ -13,8 +13,11 @@ export class Gate {
   lastSourceIndex: number = 0; // Para controle de Round Robin
   chanceDistribution: number[] = []; // Para modo Chance (ex: [0.5, 0.2, 0.3] para 3 targets)
   priorityList: number[] = []; // Para modo Prioridade (ex: [0, 2, 1] para 3 targets, onde 0 é o mais prioritário)
-  // Moodo de operação: Round Robin (tenta transferir de cada gate a cada tick, se tiver recurso suficiente); Chance de transferência (ex: 50% de chance de transferir para o primeiro, 20% de transferir para o segundo, 30% para o terceiro); Dividir recursos igualmente entre os gates (se tiver 10 unidades para transferir e 2 gates, cada um tenta transferir 5 unidades); Prioridade (sempre tenta transferir para o gate de maior prioridade primeiro)
   mode: "roundRobin" | "chance" | "equalSplit" | "priority" = "roundRobin";
+
+  // Rastreamento de atividade (lido pela visualização após cada tick)
+  wasSuccessful: boolean = false;
+  activeTargetIndices: number[] = []; // índices dos targets que receberam tokens neste tick
 
   constructor(
     id: string,
@@ -36,27 +39,38 @@ export class Gate {
     const source = this.sources[this.lastSourceIndex];
     const target = this.targets[this.lastTargetIndex];
     const tokenToTransfer = new Token(this.resourceType, this.transferAmount); 
+    const targetIdx = this.lastTargetIndex;
+
+    // Atualiza os índices para o próximo tick (sempre avança)
+    this.lastSourceIndex = (this.lastSourceIndex + 1) % this.sources.length;
+    this.lastTargetIndex = (this.lastTargetIndex + 1) % this.targets.length;
 
     if (source.has(tokenToTransfer)) {
       source.remove(tokenToTransfer);
       target.add(tokenToTransfer);
-    } 
-    // Atualiza os índices para o próximo tick
-    this.lastSourceIndex = (this.lastSourceIndex + 1) % this.sources.length;
-    this.lastTargetIndex = (this.lastTargetIndex + 1) % this.targets.length;
-    
+      this.wasSuccessful = true;
+      this.activeTargetIndices = [targetIdx];
+    } else {
+      this.wasSuccessful = false;
+      this.activeTargetIndices = [];
+    }
   }
 
   tickChance(){
-    // Implementar lógica de transferência baseada em chance
+    // Transferência baseada em chance
     const targetIndex = this.selectTargetByChance();
-    const source = this.sources[0]; // Para simplicidade, sempre tenta transferir do primeiro stock de origem
+    const source = this.sources[0];
     const target = this.targets[targetIndex];
     const tokenToTransfer = new Token(this.resourceType, this.transferAmount);
       
     if (source.has(tokenToTransfer)) {
       source.remove(tokenToTransfer);
       target.add(tokenToTransfer);
+      this.wasSuccessful = true;
+      this.activeTargetIndices = [targetIndex];
+    } else {
+      this.wasSuccessful = false;
+      this.activeTargetIndices = [];
     }
   }
 
@@ -73,20 +87,28 @@ export class Gate {
   }
 
   tickEqualSplit(){
-    // Implementar lógica de divisão igualitária dos recursos entre os targets
-    const source = this.sources[0]; // Para simplicidade, sempre tenta transferir do primeiro stock de origem
+    // Divisão igualitária dos recursos entre os targets
+    const source = this.sources[0];
     const totalTargets = this.targets.length;
-    const tokenToTransfer = new Token(this.resourceType, Math.floor(this.transferAmount / totalTargets));
+    const amountEach = Math.floor(this.transferAmount / totalTargets);
+    const tokenToTransfer = new Token(this.resourceType, amountEach);
 
-    if (source.has(tokenToTransfer)) {  
+    if (amountEach > 0 && source.has(tokenToTransfer)) {  
       source.remove(tokenToTransfer);
-      this.targets.forEach(target => target.add(tokenToTransfer));
-    } 
+      this.targets.forEach(target => target.add(new Token(this.resourceType, amountEach)));
+      this.wasSuccessful = true;
+      this.activeTargetIndices = this.targets.map((_, i) => i);
+    } else {
+      this.wasSuccessful = false;
+      this.activeTargetIndices = [];
+    }
   }
 
   tickPriority(){
-    // Implementar lógica de transferência baseada em prioridade
-    const source = this.sources[0]; // Para simplicidade, sempre tenta transferir do primeiro stock de origem
+    // Transferência baseada em prioridade
+    const source = this.sources[0];
+    this.wasSuccessful = false;
+    this.activeTargetIndices = [];
     for (let i = 0; i < this.priorityList.length; i++) {
       const targetIndex = this.priorityList[i];
       const target = this.targets[targetIndex];
@@ -94,6 +116,8 @@ export class Gate {
       if (source.has(tokenToTransfer)) {
         source.remove(tokenToTransfer);
         target.add(tokenToTransfer);
+        this.wasSuccessful = true;
+        this.activeTargetIndices = [targetIndex];
         break; // Para após transferir para o primeiro target disponível na lista de prioridade
       }
     }

@@ -6,6 +6,8 @@ export class Sink {
     id: string;
     stock: Stock;
     type: string;
+    wasSuccessful: boolean = false;
+    totalConsumed: number = 0; // acumulado total de tokens consumidos
 
     constructor(id: string, stock: Stock, type: string) {
         this.id = id;
@@ -15,6 +17,12 @@ export class Sink {
 
     tick() {
         const token = new Token(this.type, 1);
-        this.stock.remove(token);
+        if (this.stock.has(token)) {
+            this.stock.remove(token);
+            this.wasSuccessful = true;
+            this.totalConsumed += 1;
+        } else {
+            this.wasSuccessful = false;
+        }
     }
 }
