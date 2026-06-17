@@ -99,9 +99,6 @@ function buildSim() {
   return { sim, stockRes, stockA, stockB, stockC, stockReal, src, gate, convComToRar, convRarToLend, convReal };
 }
 
-function amt(stock: Stock, type: string): number {
-  return stock.tokens.get(type)?.amount ?? 0;
-}
 
 type Arrow = { x1: number; y1: number; x2: number; y2: number; active: boolean };
 
@@ -133,7 +130,7 @@ export default function App() {
   const [sourceRate, setSourceRate]           = useState(1);
 
   const doTick = useCallback(() => {
-    const { sim, stockA, stockB, stockC, stockReal, gate, convComToRar, convRarToLend, convReal } = simRef.current;
+    const { sim, gate, convComToRar, convRarToLend, convReal } = simRef.current;
     sim.tick();
     totalGeneratedRef.current += simRef.current.src.rate;
 
